@@ -1,4 +1,9 @@
-{ inputs, lib, pkgs, ... }:
+{
+  inputs,
+  lib,
+  pkgs,
+  ...
+}:
 
 {
   imports = [
@@ -6,11 +11,13 @@
   ];
 
   nixpkgs = {
-    overlays = [
-    ];
+    overlays =
+      [
+      ];
     config = {
       allowUnfree = true;
       allowUnfreePredicate = _: true;
+      allowBroken = true;
     };
   };
 
@@ -20,6 +27,7 @@
     stateVersion = "24.11";
 
     packages = with pkgs; [
+      fd
       zip
       unzip
       yq
@@ -40,6 +48,16 @@
       gotools
       nerdfonts
       pciutils
+      lua54Packages.luarocks
+      lua51Packages.magick
+      tree-sitter
+      nixfmt-rfc-style
+      _1password-cli
+      _1password-gui
+      ruff
+      lua
+      prettierd
+      rustup
     ];
   };
 
@@ -52,18 +70,18 @@
       enable = true;
       plugins = with pkgs; [
         gh
-	awscli2
-	cachix
+        awscli2
+        cachix
       ];
     };
     ssh = {
       enable = true;
       matchBlocks = {
         "*" = {
-	  extraOptions = {
-	    identityAgent = "~/.1password/agent.sock";
-	  };
-	};
+          extraOptions = {
+            identityAgent = "~/.1password/agent.sock";
+          };
+        };
       };
     };
     git = {
@@ -72,17 +90,17 @@
       userEmail = "keloran@chewedfeed.com";
       extraConfig = {
         gpg = {
-	  format = "ssh";
-	};
-	"gpg \"ssh\"" = {
-	  program = "${lib.getExe' pkgs._1password-gui "op-ssh-sign"}";
- 	};
-	commit = {
-	  gpgsign = true;
-	};
-	user = {
-	  signingKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOxKs7zVMUjUHGzMLNAQA3GTRzQIucJZkrvhFsaRvdAw";
-	};
+          format = "ssh";
+        };
+        "gpg \"ssh\"" = {
+          program = "${lib.getExe' pkgs._1password-gui "op-ssh-sign"}";
+        };
+        commit = {
+          gpgsign = true;
+        };
+        user = {
+          signingKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOxKs7zVMUjUHGzMLNAQA3GTRzQIucJZkrvhFsaRvdAw";
+        };
       };
     };
     home-manager = {
