@@ -63,6 +63,9 @@
   };
 
   services = {
+    getty = {
+      autologinUser = "keloran";
+    };
     xserver = {
       enable = true;
       xkb = {
