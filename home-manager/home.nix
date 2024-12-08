@@ -58,6 +58,8 @@
       lua
       prettierd
       rustup
+      python3
+      jetbrains-toolbox
     ];
   };
 
@@ -101,6 +103,9 @@
         user = {
           signingKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOxKs7zVMUjUHGzMLNAQA3GTRzQIucJZkrvhFsaRvdAw";
         };
+        alias = {
+          pushit = "!\"git push origin $(git rev-parse --abbrev-ref HEAD)\"";
+        };
       };
     };
     home-manager = {
@@ -108,6 +113,26 @@
     };
     alacritty = {
       enable = true;
+      settings = {
+        general = {
+          live_config_reload = true;
+        };
+        keyboard.bindings = [
+          {
+            key = "C";
+            mods = "Control";
+            action = "Copy";
+          }
+          {
+            key = "V";
+            mods = "Control";
+            action = "Paste";
+          }
+        ];
+        env = {
+          decorations_theme_variant = "Dark";
+        };
+      };
     };
   };
 
