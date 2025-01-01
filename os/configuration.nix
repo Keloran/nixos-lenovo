@@ -14,7 +14,6 @@
   time.timeZone = "Europe/London";
   console.keyMap = "uk";
   hardware.pulseaudio.enable = false;
-  security.rtkit.enable = true;
 
   system = {
     stateVersion = "24.11";
@@ -104,6 +103,11 @@
       interval = "hourly";
       localuser = null;
     };
+    gnome = {
+      gnome-keyring = {
+        enable = lib.mkForce false;
+      };
+    };
   };
 
   nix = let flakeInputs = lib.filterAttrs (_: lib.isType "flake") inputs; in {
@@ -140,6 +144,8 @@
 
   environment = {
     systemPackages = with pkgs; [
+      gnome-keyring
+      libgnome-keyring
       home-manager
     ];
     shellAliases = {
@@ -160,7 +166,37 @@
     };
   };
 
-  programs = {};
+  programs = {
+    _1password-gui = {
+      enable = true;
+      polkitPolicyOwners = [
+        "keloran"
+      ];
+    };
+    _1password = {
+      enable = true;
+    };
+  };
+
+  security = {
+    rtkit = {
+      enable = true;
+    };
+    pam = {
+      services = {
+        login = {
+          u2fAuth = true;
+          enableGnomeKeyring = lib.mkForce false;
+        };
+        sudo = {
+          u2fAuth = true;
+        };
+        polkit-1 = {
+          u2fAuth = true;
+        };
+      };
+    };
+  };
 
   systemd = {
     services = {

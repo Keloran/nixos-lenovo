@@ -14,7 +14,10 @@
     overlays = [];
     config = {
       allowUnfree = true;
-      allowUnfreePredicate = _: true;
+      allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) [
+        "1password-gui"
+        "1password-cli"
+      ];
       allowBroken = true;
       permittedInsecurePackages = [
         "openssl-1.1.1w"
