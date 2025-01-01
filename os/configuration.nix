@@ -1,7 +1,3 @@
-# Edit this configuration file to define what should be installed on
-# your system.  Help is available in the configuration.nix(5) man page
-# and in the NixOS manual (accessible by running ‘nixos-help’).
-
 {
   inputs,
   config,
@@ -11,7 +7,7 @@
 }:
 {
   imports = [
-    ./hardware-configuration.nix
+  ./hardware-configuration.nix
   ];
 
   # Actual 1 liners
@@ -84,7 +80,7 @@
       };
     };
     printing = {
-      enable = true;
+      enable = false;
     };
     flatpak = {
       enable = true;
@@ -110,22 +106,18 @@
     };
   };
 
-  nix =
-    let
-      flakeInputs = lib.filterAttrs (_: lib.isType "flake") inputs;
-    in
-    {
-      settings = {
-        experimental-features = "nix-command flakes";
-        nix-path = config.nix.nixPath;
-        allowed-users = [
-          "@wheel"
-        ];
-      };
-      channel.enable = false;
-      registry = lib.mapAttrs (_: flake: { inherit flake; }) flakeInputs;
-      nixPath = lib.mapAttrsToList (n: _: "${n}=flake:${n}") flakeInputs;
+  nix = let flakeInputs = lib.filterAttrs (_: lib.isType "flake") inputs; in {
+    settings = {
+      experimental-features = "nix-command flakes";
+      nix-path = config.nix.nixPath;
+      allowed-users = [
+        "@wheel"
+      ];
     };
+    channel.enable = false;
+    registry = lib.mapAttrs (_: flake: { inherit flake; }) flakeInputs;
+    nixPath = lib.mapAttrsToList (n: _: "${n}=flake:${n}") flakeInputs;
+  };
 
   nixpkgs = {
     config = {
@@ -156,7 +148,9 @@
     etc = {
       "1password/custom_allowed_browsers" = {
         text = ''
-            google-chrome-stable
+          google-chrome-stable
+          zen-bin
+          chrome
         '';
         mode = "0755";
       };
@@ -166,7 +160,17 @@
     };
   };
 
-  programs =
-    {
+  programs = {};
+
+  systemd = {
+    services = {
+      flatpak-repo = {
+        wantedBy = [ "multi-user.target" ];
+        path = [ pkgs.flatpak ];
+        script = ''
+          flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+        ''; 
+      };
     };
+  };
 }

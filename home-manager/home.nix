@@ -11,13 +11,14 @@
   ];
 
   nixpkgs = {
-    overlays =
-      [
-      ];
+    overlays = [];
     config = {
       allowUnfree = true;
       allowUnfreePredicate = _: true;
       allowBroken = true;
+      permittedInsecurePackages = [
+        "openssl-1.1.1w"
+      ];
     };
   };
 
@@ -60,6 +61,8 @@
       rustup
       python3
       jetbrains-toolbox
+      sublime4
+      go-task
     ];
   };
 

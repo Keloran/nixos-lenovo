@@ -1,0 +1,18 @@
+version: "3"
+tasks:
+  cleanup:
+    cmds:
+      - nixos-rebuild list-generations
+      - nix-collect-garbage --delete-old
+      - nix-collect-garbage --delete-older-than 30d
+      - sudo nix-collect-garbage -d
+      - sudo /run/current-system/bin/switch-to-configuration boot
+
+  build:
+    cmds:
+      - sudo nixos-rebuild switch --flake .
+
+  buildAndClean:
+    cmds:
+      - task: cleanup
+      - task: build
